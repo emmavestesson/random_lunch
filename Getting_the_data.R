@@ -7,16 +7,10 @@ library(lwgeom)
 library(tidyverse)
 library(here)
 library(janitor)
-devtools::install_github("sfirke/janitor")
 
 
-q0 <- opq(bbox='greater london uk', timeout = 50) %>% 
-  # add_osm_feature(key = "amenity", value = "restaurant") %>% 
-  # add_osm_feature(key = "amenity", value = "fast_food") %>% 
-  add_osm_feature(key = "amenity", value = "pub") %>%
-  add_osm_feature(key = "amenity", value = "cafe") %>% 
-  osmdata_sf()
-res0 <- osmdata_sf(q0) # create dataframe
+q0 <- opq(bbox='greater london uk', timeout = 10000) 
+
 
 amenity<- q0[["osm_points"]][["amenity"]]
 table(amenity)
@@ -55,11 +49,11 @@ food_places_cg$distance_from_work <- t(round(distance))
 food_places_cg$label <- paste0("<b>", food_places_cg$name, "</b> <br>", 
                                "Distance: ", food_places_cg$distance_from_work, "m")
 
-food_places_cg1 <- st_coordinates(cov_gar) %>% 
+food_places_cg1 <- st_coordinates(food_places_cg) %>% 
   as.data.frame()
 food_places_cg1$name <- food_places_cg$name 
 food_places_cg1$distance_from_work <- t(round(distance))
 food_places_cg1$label <- paste0("<b>", food_places_cg1$name, "</b> <br>", 
                                "Distance: ", food_places_cg1$distance_from_work, "m")
 
-saveRDS(food_places_cg1,file=here::here("cov_gar.rds"))
+saveRDS(food_places_cg1,file=here::here("greater_ldn.rds"))
