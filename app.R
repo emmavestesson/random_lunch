@@ -3,27 +3,27 @@ library(shiny)
 library(leaflet)
 #library(leaflet.extras)
 library(tidyverse)
-library(sf)
+# library(sf)
 
+greater_ldn <- readRDS(file="greater_ldn.rds")
+
+greater_ldn$distance_from_work <- as.numeric(greater_ldn$distance_from_work)
 
 ui <- fluidPage(
   leafletOutput("mymap"),
   h3(textOutput("selected_var")),
   actionButton("recalc", "Generate new lunch option"),
-  numericInput("dist", "Distance:", value=500, min = 1, max = 1000)
+  numericInput("dist", "Distance:", value=500, min = 100, max = 1000)
 )
 
 # Define server 
 server <- function(input, output, session) {
   
 
-  cov_gar <- readRDS(file="greater_ldn.rds")
- 
-
 
   # create the interactive map...
   output$mymap <- renderLeaflet({
-    cov_gar <- cov_gar %>%
+    cov_gar <- greater_ldn %>%
       dplyr::filter(as.numeric(distance_from_work)<input$dist) 
     
     points <- eventReactive(input$recalc, {
