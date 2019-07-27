@@ -12,13 +12,15 @@ greater_ldn$distance_from_work <- as.numeric(greater_ldn$distance_from_work)
 
 ui <- dashboardPage(
   dashboardHeader(title = 'Where to have lunch?'),
-  dashboardSidebar( width=200),
-  dashboardBody(
-    box(actionButton("recalc", "Generate new lunch option"),
-    numericInput("dist", "Distance:", value=500, min = 100, max = 1000),
-  h3(textOutput("selected_var")),
-  leafletOutput("mymap")))
+  dashboardSidebar( width=200,actionButton("recalc", "Generate new lunch option"),
+                    numericInput("dist", "Distance:", value=500, min = 100, max = 1000)),
+  dashboardBody(fluidRow(
+    column(12,h3(textOutput("selected_var"))),
+  column(12,leafletOutput("mymap"))
   )
+  )
+)
+
 
 
 # Define server 
