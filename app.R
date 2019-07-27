@@ -10,27 +10,67 @@ greater_ldn <- readRDS(file="greater_ldn.rds")
 
 greater_ldn$distance_from_work <- as.numeric(greater_ldn$distance_from_work)
 
-ui <- dashboardPage(
-  dashboardHeader(title = 'Where to have lunch?'),
-  dashboardSidebar( width=200,actionButton("recalc", "Generate lunch option"),
+ui <- dashboardPage(dashboardHeader(title = 'Where to have lunch?'), 
+sidebar <- dashboardSidebar(width=200, actionButton("recalc", "Generate lunch option"),
                     numericInput("dist", "Distance:", value=500, min = 100, max = 1000)),
-  dashboardBody(                  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
-  ),
-    fluidRow(
+body <- dashboardBody(  
+  tags$head(
+    tags$style(HTML("
+      @import url('//fonts.googleapis.com/css?family=Lobster|Cabin:400,700');
+    ")),
+    tags$style(
+      HTML('
+             h3 {
+font-family: "Georgia", Times, "Times New Roman", serif;
+             font-weight: bold;
+             }
+             ')),
+    tags$style(
+      HTML('
+        .skin-blue .main-header .logo {
+    font-family: "Lobster", Times, "Times New Roman", cursive;
+             font-size: 20px;
+             color: #fff;
+             background-color: #dd0031;
+        }
+        /* logo */
+        .skin-blue .main-header .logo {
+                              background-color: #dd0031;
+                              }
+             
+             /* other links in the sidebarmenu */
+             .skin-blue .main-sidebar .sidebar .sidebar-menu a{
+             background-color: #53a9cd;
+             color: #fff;
+             }
+             /* toggle button when hovered  */                    
+             .skin-blue .main-header .navbar .sidebar-toggle:hover{
+             background-color: #53a9cd;
+             }
+
+        /* navbar (rest of the header) */
+        .skin-blue .main-header .navbar {
+                              background-color: #dd0031;
+        }   
+        /* main sidebar */
+        .skin-blue .main-sidebar {
+             background-color: 	#C0C0C0;
+             }
+  
+       /* logo when hovered */
+        .skin-blue .main-header .logo:hover {
+          background-color: #dd0031;
+        }')
+    )),
+  fluidRow(
     column(12,h3(textOutput("selected_var"))),
   column(12,leafletOutput("mymap"))
   )
   )
 )
 
-
-
 # Define server 
 server <- function(input, output, session) {
-  
-
-
   # create the interactive map...
   output$mymap <- renderLeaflet({
     cov_gar <- greater_ldn %>%
