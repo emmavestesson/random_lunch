@@ -1,6 +1,7 @@
 
 library(shiny)
 library(leaflet)
+library(shinydashboard)
 #library(leaflet.extras)
 library(tidyverse)
 # library(sf)
@@ -9,12 +10,16 @@ greater_ldn <- readRDS(file="greater_ldn.rds")
 
 greater_ldn$distance_from_work <- as.numeric(greater_ldn$distance_from_work)
 
-ui <- fluidPage(
-  leafletOutput("mymap"),
+ui <- dashboardPage(
+  dashboardHeader(title = 'Where to have lunch?'),
+  dashboardSidebar( width=200),
+  dashboardBody(
+    box(actionButton("recalc", "Generate new lunch option"),
+    numericInput("dist", "Distance:", value=500, min = 100, max = 1000),
   h3(textOutput("selected_var")),
-  actionButton("recalc", "Generate new lunch option"),
-  numericInput("dist", "Distance:", value=500, min = 100, max = 1000)
-)
+  leafletOutput("mymap")))
+  )
+
 
 # Define server 
 server <- function(input, output, session) {
